@@ -65,11 +65,31 @@ func toogleTodoStatus(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, todo)
 }
 
+func deleteTodoByID(context *gin.Context) {
+	id := context.Param("id")
+
+	for i, t := range todos {
+		if t.ID == id {
+			todos = append(todos[:i], todos[i+1:]...)
+
+			context.IndentedJSON(http.StatusOK, gin.H{
+				"message": "Todo deleted successfully!",
+			})
+			return
+		}
+	}
+
+	context.IndentedJSON(http.StatusNotFound, gin.H{
+		"message": "Todo not found!",
+	})
+}
+
 func main() {
 	router := gin.Default()
 	router.POST("/todos", addTodo)
 	router.GET("/todos", getTodos)
 	router.GET("/todos/:id", getTodo)
 	router.PATCH("/todos/:id", toogleTodoStatus)
+	router.DELETE("/todos/:id", deleteTodoByID)
 	router.Run("localhost:8080")
 }
