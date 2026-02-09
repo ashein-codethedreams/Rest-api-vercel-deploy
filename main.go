@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,7 +18,12 @@ var todos = []todo{
 	{ID: "3", Item: "Become a Fullstack Developer", Completed: false},
 }
 
+func getTodos(context *gin.Context) {
+	context.IndentedJSON(http.StatusOK, todos)
+}
+
 func main() {
 	router := gin.Default()
+	router.GET("/todos", getTodos)
 	router.Run("localhost:8080")
 }
